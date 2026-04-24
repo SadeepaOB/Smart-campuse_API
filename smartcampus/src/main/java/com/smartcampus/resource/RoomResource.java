@@ -47,26 +47,5 @@ public class RoomResource {
         DataStore.getRooms().remove(roomId);
         return Response.noContent().build();
     }
-    @PUT
-    @Path("/{roomId}")
-    public Response updateRoom(@PathParam("roomId") String roomId, Room updatedRoom) {
-        Room existingRoom = DataStore.getRooms().get(roomId);
-        
-        if (existingRoom == null) {
-            return Response.status(404)
-                .entity("{\"message\":\"Room not found: " + roomId + "\"}").build();
-        }
-
-        // Update the fields
-        if (updatedRoom.getName() != null) {
-            existingRoom.setName(updatedRoom.getName());
-        }
-        if (updatedRoom.getCapacity() > 0) {
-            existingRoom.setCapacity(updatedRoom.getCapacity());
-        }
-
-        // Save back to DataStore (though since it's a Map of objects, 
-        // existingRoom is already a reference to the one in the map)
-        return Response.ok(existingRoom).build();
-    }
+    
 }

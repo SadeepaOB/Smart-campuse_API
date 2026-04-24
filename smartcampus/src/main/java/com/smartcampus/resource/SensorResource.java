@@ -58,38 +58,6 @@ public class SensorResource {
         resource.setSensorId(sensorId);
         return resource;
     }
-    @PUT
-    @Path("/{sensorId}")
-    public Response updateSensor(@PathParam("sensorId") String sensorId, Sensor updatedSensor) {
-        if (updatedSensor == null) {
-            return Response.status(400).entity("{\"message\":\"Request body is required\"}").build();
-        }
-
-        Sensor existingSensor = DataStore.getSensors().get(sensorId);
-
-        if (existingSensor == null) {
-            return Response.status(404)
-                .entity("{\"message\":\"Sensor not found: " + sensorId + "\"}").build();
-        }
-
-        // FIX: Using getType() because getName() doesn't exist in your model
-        if (updatedSensor.getType() != null) {
-            existingSensor.setType(updatedSensor.getType());
-        }
-
-        if (updatedSensor.getStatus() != null) {
-            existingSensor.setStatus(updatedSensor.getStatus());
-        }
-
-        // FIX: Using getCurrentValue() and setCurrentValue() per your model
-        existingSensor.setCurrentValue(updatedSensor.getCurrentValue());
-
-        // Optional: Update room association if provided
-        if (updatedSensor.getRoomId() != null) {
-            existingSensor.setRoomId(updatedSensor.getRoomId());
-        }
-
-        return Response.ok(existingSensor).build();
-    }
+    
     
 }
