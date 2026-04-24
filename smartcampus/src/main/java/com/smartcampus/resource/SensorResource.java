@@ -58,6 +58,31 @@ public class SensorResource {
         resource.setSensorId(sensorId);
         return resource;
     }
+    @DELETE
+    @Path("/{sensorId}")
+    public Response deleteSensor(@PathParam("sensorId") String sensorId) {
+        // 1. Check if the sensor exists
+        Sensor sensor = DataStore.getSensors().get(sensorId);
+        
+        if (sensor == null) {
+            return Response.status(404)
+                .entity("{\"message\":\"Sensor not found: " + sensorId + "\"}").build();
+        }
+
+        // 2. Cleanup: If the sensor is linked to a room, remove the reference from that room
+        if (sensor.getRoomId() != null) {
+            Room room = DataStore.getRooms().get(sensor.getRoomId());
+            if (room != null && room.getSensorIds() != null) {
+                room.getSensorIds().remove(sensorId);
+            }
+        }
+
+        // 3. Remove the sensor from the global store
+        DataStore.getSensors().remove(sensorId);
+
+        // 4. Return 204 No Content (standard for successful deletes)
+        return Response.noContent().build();
+    }
     
     
 }
